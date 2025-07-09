@@ -1,16 +1,16 @@
 {
-  "name": "react-pwa",
+  "name": "pastebin",
   "version": "2.3.0",
   "type": "module",
   "description": "Starter kit for modern web applications",
-  "homepage": "https://react-pwa.surenatoyan.com/",
+  "homepage": "https://pastebin.com/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/suren-atoyan/react-pwa.git"
+    "url": "https://github.com/jalal-haidar/pastebin.git"
   },
   "bugs": {
-    "url": "https://github.com/suren-atoyan/react-pwa/issues",
-    "email": "contact@surenatoyan.com"
+    "url": "https://github.com/jalal-haidar/pastebin/issues",
+    "email": "contact@pastebin.com"
   },
   "license": "MIT",
   "scripts": {
@@ -34,6 +34,7 @@
     "@mui/material": "^5.15.0",
     "@mui/system": "^5.15.0",
     "@mui/utils": "^5.15.0",
+    "axios": "^1.10.0",
     "is-mobile": "^4.0.0",
     "notistack": "^3.0.1",
     "react": "^18.2.0",
