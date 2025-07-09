@@ -15,16 +15,16 @@ const routes: Routes = {
     title: 'Welcome',
     icon: HomeIcon,
   },
-  [Pages.Page1]: {
-    component: asyncComponentLoader(() => import('@/pages/Page1')),
-    path: '/page-1',
-    title: 'Page 1',
+  [Pages.CreatePaste]: {
+    component: asyncComponentLoader(() => import('@/pages/CreatePaste')),
+    path: '/create-paste',
+    title: 'Create Paste',
     icon: GitHubIcon,
   },
-  [Pages.Page2]: {
-    component: asyncComponentLoader(() => import('@/pages/Page2')),
-    path: '/page-2',
-    title: 'Page 2',
+  [Pages.GetPaste]: {
+    component: asyncComponentLoader(() => import('@/pages/GetPaste')),
+    path: '/get-paste',
+    title: 'Get Paste',
     icon: AddTaskIcon,
   },
   [Pages.Page3]: {
