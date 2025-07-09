@@ -113,22 +113,47 @@ function CreatePaste() {
     setPasteId('');
   };
 
-  const handleCopyLink = () => {
-    if (pasteId) {
+  // Check if Web Share API is supported
+  const isWebShareSupported = (): boolean => {
+    return 'share' in navigator && typeof navigator.share === 'function';
+  };
+
+  const handleCopyLink = async () => {
+    if (!pasteId) return;
+
+    try {
       const link = `${window.location.origin}/paste/${pasteId}`;
-      navigator.clipboard.writeText(link);
-      // You could add a toast notification here
+      await navigator.clipboard.writeText(link);
+      setSuccess('Link copied to clipboard!');
+    } catch (err) {
+      console.error('Failed to copy to clipboard:', err);
+      setError('Failed to copy link to clipboard');
     }
   };
 
-  const handleShare = () => {
-    if (pasteId && navigator.share) {
-      const link = `${window.location.origin}/paste/${pasteId}`;
-      navigator.share({
-        title: title || 'Shared Paste',
-        text: 'Check out this paste',
-        url: link,
-      });
+  const handleShare = async () => {
+    if (!pasteId) return;
+
+    const shareData = {
+      title: title || 'Shared Paste',
+      text: 'Check out this paste',
+      url: `${window.location.origin}/paste/${pasteId}`,
+    };
+
+    if (isWebShareSupported()) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        if (err instanceof Error && err.name !== 'AbortError') {
+          console.error('Share failed:', err);
+          // Fallback to clipboard
+          handleCopyLink();
+        }
+        // User cancelled sharing - do nothing
+      }
+    } else {
+      // Fallback to clipboard for unsupported browsers
+      handleCopyLink();
     }
   };
 
@@ -263,7 +288,7 @@ function CreatePaste() {
                           <ContentCopy />
                         </IconButton>
                       </Tooltip>
-                      {navigator.share && (
+                      {isWebShareSupported() && (
                         <Tooltip title="Share">
                           <IconButton size="small" onClick={handleShare}>
                             <Share />
