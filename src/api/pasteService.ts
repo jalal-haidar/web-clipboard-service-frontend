@@ -1,7 +1,10 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_ENV_BASEURL;
+const API_BASE_URL =
+  import.meta.env.VITE_ENV_BASEURL ||
+  (import.meta.env.DEV ? '/api' : 'https://pastebin-api.onrender.com');
 console.log('API_BASE_URL:', API_BASE_URL);
+console.log('All env vars:', import.meta.env);
 
 // Types for better TypeScript support
 interface ApiResponse<T> {
@@ -55,8 +58,10 @@ export const createPaste = async (
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
       body: JSON.stringify(requestBody),
+      mode: 'cors', // Explicitly set CORS mode
     });
 
     if (!response.ok) {
@@ -78,7 +83,14 @@ export const createPaste = async (
     // Type guard to handle unknown error type
     if (error instanceof Error) {
       if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        throw new Error('Network error. Please check your connection');
+        throw new Error(
+          'Network error. Please check your connection and ensure the API server is running.',
+        );
+      }
+      if (error.message.includes('CORS')) {
+        throw new Error(
+          'CORS error. The API server may not be configured to accept requests from this domain.',
+        );
       }
       // Re-throw the original error if it's already an Error instance
       throw error;
@@ -102,6 +114,7 @@ export const getPaste = async (id: string): Promise<PasteResponse> => {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
+      mode: 'cors', // Explicitly set CORS mode
       signal: AbortSignal.timeout(10000), // 10 second timeout
     });
 
