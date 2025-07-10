@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000'; // or your deployed backend
+const API_BASE_URL = import.meta.env.VITE_ENV_BASEURL;
+console.log('API_BASE_URL:', API_BASE_URL);
 
 // Types for better TypeScript support
 interface ApiResponse<T> {
