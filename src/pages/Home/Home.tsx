@@ -18,7 +18,7 @@ function Home() {
   };
 
   const handleViewPaste = () => {
-    navigate('/view-paste');
+    navigate('/get-paste');
   };
 
   return (
