@@ -2,11 +2,11 @@ import isMobile from '@/utils/is-mobile';
 
 import type { Notifications } from './types';
 
-const title = 'React PWA';
+const title = 'Paste Web App';
 
-const email = 'auther-email@gmail.com';
+const email = 'jalal99.dev@gmail.com';
 
-const repository = 'https://github.com/suren-atoyan/react-pwa';
+const repository = 'https://github.com/jalal-haidar/web-clipboard-service-frontend';
 
 const messages = {
   app: {
