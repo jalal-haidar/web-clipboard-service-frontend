@@ -10,9 +10,9 @@ import { Pages, Routes } from './types';
 
 const routes: Routes = {
   [Pages.Welcome]: {
-    component: asyncComponentLoader(() => import('@/pages/Welcome')),
+    component: asyncComponentLoader(() => import('@/pages/Home')),
     path: '/',
-    title: 'Welcome',
+    title: 'Home',
     icon: HomeIcon,
   },
   [Pages.CreatePaste]: {
@@ -27,22 +27,22 @@ const routes: Routes = {
     title: 'Get Paste',
     icon: AddTaskIcon,
   },
-  [Pages.Page3]: {
-    component: asyncComponentLoader(() => import('@/pages/Page3')),
-    path: '/page-3',
-    title: 'Page 3',
-    icon: TerrainIcon,
-  },
-  [Pages.Page4]: {
-    component: asyncComponentLoader(() => import('@/pages/Page4')),
-    path: '/page-4',
-    title: 'Page 4',
-    icon: BugReportIcon,
-  },
-  [Pages.NotFound]: {
-    component: asyncComponentLoader(() => import('@/pages/NotFound')),
-    path: '*',
-  },
+  // [Pages.Page3]: {
+  //   component: asyncComponentLoader(() => import('@/pages/Page3')),
+  //   path: '/page-3',
+  //   title: 'Page 3',
+  //   icon: TerrainIcon,
+  // },
+  // [Pages.Page4]: {
+  //   component: asyncComponentLoader(() => import('@/pages/Page4')),
+  //   path: '/page-4',
+  //   title: 'Page 4',
+  //   icon: BugReportIcon,
+  // },
+  // [Pages.NotFound]: {
+  //   component: asyncComponentLoader(() => import('@/pages/NotFound')),
+  //   path: '*',
+  // },
 };
 
 export default routes;
