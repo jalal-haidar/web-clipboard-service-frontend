@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-// Import your getPaste function here
+import { useTheme } from '@mui/material/styles';
+import { IconButton, Tooltip } from '@mui/material';
+import { ContentCopy } from '@mui/icons-material';
 import { getPaste } from '../api/pasteService';
 
 const PasteViewer: React.FC = () => {
@@ -7,6 +9,7 @@ const PasteViewer: React.FC = () => {
   const [paste, setPaste] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const theme = useTheme();
 
   const handleView = async () => {
     if (!id.trim()) {
@@ -36,6 +39,17 @@ const PasteViewer: React.FC = () => {
     }
   };
 
+  const handleCopy = async () => {
+    if (paste) {
+      try {
+        await navigator.clipboard.writeText(paste);
+        // You could add a toast notification here
+      } catch (err) {
+        console.error('Failed to copy:', err);
+      }
+    }
+  };
+
   return (
     <div>
       <div>
@@ -58,10 +72,18 @@ const PasteViewer: React.FC = () => {
 
       {paste && (
         <div>
-          <h3>Paste Content:</h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3>Paste Content:</h3>
+            <Tooltip title="Copy to Clipboard">
+              <IconButton onClick={handleCopy} size="small">
+                <ContentCopy />
+              </IconButton>
+            </Tooltip>
+          </div>
           <pre
             style={{
-              background: '#f5f5f5',
+              background:
+                theme.palette.mode === 'dark' ? theme.palette.grey[900] : theme.palette.grey[100],
               padding: '10px',
               borderRadius: '4px',
               overflow: 'auto',
