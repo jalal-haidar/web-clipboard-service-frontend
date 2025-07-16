@@ -284,6 +284,50 @@ export const removePasteFromHistory = (pasteId: string): void => {
   }
 };
 
+// Function to delete a paste from the backend
+export const deletePaste = async (id: string): Promise<{ message: string; id: string }> => {
+  try {
+    if (!id || !id.trim()) {
+      throw new Error('Paste ID is required');
+    }
+
+    const response = await fetch(`${API_BASE_URL}/paste/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      mode: 'cors',
+      signal: AbortSignal.timeout(10000), // 10 second timeout
+    });
+
+    console.log('Delete response:', response);
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error('Paste not found or has already been deleted');
+      } else if (response.status === 400) {
+        throw new Error('Invalid paste ID format');
+      } else if (response.status >= 500) {
+        throw new Error('Server error. Please try again later');
+      } else {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+    }
+
+    const data = await response.json();
+    console.log('Paste deleted successfully:', data);
+
+    // Also remove from local history
+    removePasteFromHistory(id);
+
+    return data;
+  } catch (error) {
+    console.error('Error deleting paste:', error);
+    throw error;
+  }
+};
+
 // Function to get all recent pastes from the API
 export const getAllRecentPastes = async (): Promise<StoredPaste[]> => {
   try {
