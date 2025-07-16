@@ -3,6 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import { IconButton, Tooltip } from '@mui/material';
 import { ContentCopy } from '@mui/icons-material';
 import { getPaste } from '../api/pasteService';
+import useNotifications from '@/store/notifications';
 
 const PasteViewer: React.FC = () => {
   const [id, setId] = useState<string>('');
@@ -10,6 +11,7 @@ const PasteViewer: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const theme = useTheme();
+  const [, notificationsActions] = useNotifications();
 
   const handleView = async () => {
     if (!id.trim()) {
@@ -43,9 +45,22 @@ const PasteViewer: React.FC = () => {
     if (paste) {
       try {
         await navigator.clipboard.writeText(paste);
-        // You could add a toast notification here
+        notificationsActions.push({
+          message: 'Paste content copied to clipboard!',
+          options: {
+            variant: 'success',
+            autoHideDuration: 3000,
+          },
+        });
       } catch (err) {
         console.error('Failed to copy:', err);
+        notificationsActions.push({
+          message: 'Failed to copy paste content',
+          options: {
+            variant: 'error',
+            autoHideDuration: 3000,
+          },
+        });
       }
     }
   };
