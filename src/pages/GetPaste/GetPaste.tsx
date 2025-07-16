@@ -16,7 +16,7 @@
 
 // export default GetPaste;
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Typography,
   TextField,
@@ -32,6 +32,7 @@ import {
   Chip,
 } from '@mui/material';
 import { Visibility, ContentCopy, Share, Download, Clear } from '@mui/icons-material';
+import { useSearchParams } from 'react-router-dom';
 
 import Meta from '@/components/Meta';
 import { getPaste } from '@/api/pasteService';
@@ -41,37 +42,55 @@ function GetPaste() {
   const [paste, setPaste] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [searchParams] = useSearchParams();
 
-  const handleView = async () => {
-    if (!id.trim()) {
-      setError('Please enter a paste ID');
-      return;
+  useEffect(() => {
+    const pasteId = searchParams.get('id');
+    if (pasteId) {
+      setId(pasteId);
+      // Auto-fetch if ID is provided in URL
+      handleViewPaste(pasteId);
     }
+  }, [searchParams]);
 
-    console.log('Fetching paste with ID:', id);
+  const handleViewPaste = useCallback(
+    async (pasteId?: string) => {
+      const targetId = pasteId || id;
+      if (!targetId.trim()) {
+        setError('Please enter a paste ID');
+        return;
+      }
 
-    setLoading(true);
-    setError('');
-    setPaste(null);
+      console.log('Fetching paste with ID:', targetId);
 
-    try {
-      const response = await getPaste(id);
-      console.log('Paste fetch response(page):', response);
-      setPaste(response);
+      setLoading(true);
+      setError('');
+      setPaste(null);
 
-      // if (response && response.id && response.text) {
-      //   console.log('hit if statement for response1');
-      //   setPaste(response);
-      //   console.log('hit if statement for response2');
-      // } else {
-      //   setError('Failed to fetch paste - invalid response format');
-      // }
-    } catch (err) {
-      console.error('Paste fetch failed:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch paste');
-    } finally {
-      setLoading(false);
-    }
+      try {
+        const response = await getPaste(targetId);
+        console.log('Paste fetch response(page):', response);
+        setPaste(response);
+
+        // if (response && response.id && response.text) {
+        //   console.log('hit if statement for response1');
+        //   setPaste(response);
+        //   console.log('hit if statement for response2');
+        // } else {
+        //   setError('Failed to fetch paste - invalid response format');
+        // }
+      } catch (err) {
+        console.error('Paste fetch failed:', err);
+        setError(err instanceof Error ? err.message : 'Failed to fetch paste');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [id],
+  );
+
+  const handleView = () => {
+    handleViewPaste();
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -241,7 +260,8 @@ function GetPaste() {
                 variant="outlined"
                 sx={{
                   p: 2,
-                  backgroundColor: '#f5f5f5',
+                  backgroundColor: (theme) =>
+                    theme.palette.mode === 'dark' ? 'grey.900' : 'grey.100',
                   maxHeight: '500px',
                   overflow: 'auto',
                 }}
