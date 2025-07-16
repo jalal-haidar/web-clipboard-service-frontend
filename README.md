@@ -1,7 +1,4 @@
-[![Analyses](https://github.com/suren-atoyan/react-pwa/actions/workflows/analyses.yml/badge.svg)](https://github.com/suren-atoyan/react-pwa/actions/workflows/analyses.yml)
-[![E2E Tests](https://github.com/suren-atoyan/react-pwa/actions/workflows/tests:e2e.yml/badge.svg)](https://github.com/suren-atoyan/react-pwa/actions/workflows/tests:e2e.yml)
-
-<a href="http://react-pwa.surenatoyan.com/" target="_blank" rel="noreferrer">
+<a href="https://github.com/jalal-haidar/web-clipboard-service-frontend.git/" target="_blank" rel="noreferrer">
  <img src="./public/cover.png" title="Base App">
 </a>
 
@@ -9,14 +6,8 @@
 
 **Starter kit for modern web applications!**
 
-## Synopsis
 
-This project (a GitHub template) is an opinionated setup for modern web applications.
-It's a combination of essential (and minimal) libraries/components/utils/dev-tools/etc., which developers usually need during the process of making modern React applications.
 
-## Motivation
-
-Almost all projects need to have a router, a UI framework, store integration, theming, error handling, base file/folder structure, a builder, some developer tools (eslint, prettier, etc), tests and many more. In this starter kit, we tried to put together the best options available from the above-mentioned fields. Out of the box, it provides a modern production-ready setup created by developers for developers 💚
 
 ### Tech stack
 
