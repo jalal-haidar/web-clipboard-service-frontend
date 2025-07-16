@@ -18,18 +18,19 @@ import {
   DialogActions,
   TextField,
 } from '@mui/material';
-import { ContentCopy, Delete, Visibility, Search, Refresh, FileCopy } from '@mui/icons-material';
+import { ContentCopy, Delete, Visibility, Search, Refresh } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
 import Meta from '@/components/Meta';
 import {
   getRecentPastesUnified,
-  removePasteFromHistory,
+  deletePaste,
   exportUserPasteIds,
   importUserPasteIds,
   type StoredPaste,
 } from '@/api/pasteService';
 import useOrientation from '@/hooks/useOrientation';
+import useNotifications from '@/store/notifications';
 
 function Page3() {
   const [pastes, setPastes] = useState<StoredPaste[]>([]);
@@ -42,6 +43,7 @@ function Page3() {
   const [importData, setImportData] = useState('');
   const navigate = useNavigate();
   const isPortrait = useOrientation();
+  const [, notificationsActions] = useNotifications();
 
   useEffect(() => {
     loadPastes();
@@ -61,32 +63,56 @@ function Page3() {
     }
   };
 
-  const handleCopyPaste = async (pasteId: string) => {
-    try {
-      if (!pasteId) return;
-      await navigator.clipboard.writeText(pasteId);
-      // You might want to show a toast notification here
-      console.log('Paste ID copied to clipboard');
-    } catch (error) {
-      console.error('Failed to copy paste ID:', error);
-    }
-  };
-
   const handleCopyPasteContent = async (pasteText: string) => {
     try {
       if (!pasteText) return;
       await navigator.clipboard.writeText(pasteText);
-      // You might want to show a toast notification here
-      console.log('Paste content copied to clipboard');
+      notificationsActions.push({
+        message: 'Paste content copied to clipboard!',
+        options: {
+          variant: 'success',
+          autoHideDuration: 3000,
+        },
+      });
     } catch (error) {
       console.error('Failed to copy paste content:', error);
+      notificationsActions.push({
+        message: 'Failed to copy paste content',
+        options: {
+          variant: 'error',
+          autoHideDuration: 3000,
+        },
+      });
     }
   };
 
-  const handleDeletePaste = (pasteId: string) => {
+  const handleDeletePaste = async (pasteId: string) => {
     if (!pasteId) return;
-    removePasteFromHistory(pasteId);
-    setPastes(pastes.filter((paste) => paste.id !== pasteId));
+
+    try {
+      // Call backend API to delete the paste
+      await deletePaste(pasteId);
+
+      // Remove from local state
+      setPastes(pastes.filter((paste) => paste.id !== pasteId));
+
+      notificationsActions.push({
+        message: 'Paste deleted successfully!',
+        options: {
+          variant: 'info',
+          autoHideDuration: 3000,
+        },
+      });
+    } catch (error) {
+      console.error('Failed to delete paste:', error);
+      notificationsActions.push({
+        message: error instanceof Error ? error.message : 'Failed to delete paste',
+        options: {
+          variant: 'error',
+          autoHideDuration: 3000,
+        },
+      });
+    }
   };
 
   const handlePreviewPaste = (paste: StoredPaste) => {
@@ -102,8 +128,13 @@ function Page3() {
   const handleExportPasteIds = () => {
     const exportedData = exportUserPasteIds();
     navigator.clipboard.writeText(exportedData);
-    // You can show a success message here
-    console.log('Paste IDs exported to clipboard');
+    notificationsActions.push({
+      message: 'Paste IDs exported to clipboard!',
+      options: {
+        variant: 'success',
+        autoHideDuration: 3000,
+      },
+    });
   };
 
   const handleImportPasteIds = () => {
@@ -113,10 +144,22 @@ function Page3() {
         setImportData('');
         setImportExportOpen(false);
         loadPastes(); // Refresh the list
-        // You can show a success message here
-        console.log('Paste IDs imported successfully');
+        notificationsActions.push({
+          message: 'Paste IDs imported successfully!',
+          options: {
+            variant: 'success',
+            autoHideDuration: 3000,
+          },
+        });
       } catch (error) {
         console.error('Failed to import paste IDs:', error);
+        notificationsActions.push({
+          message: 'Failed to import paste IDs',
+          options: {
+            variant: 'error',
+            autoHideDuration: 3000,
+          },
+        });
       }
     }
   };
@@ -373,6 +416,13 @@ function Page3() {
               onClick={() => {
                 if (selectedPaste?.text) {
                   navigator.clipboard.writeText(selectedPaste.text);
+                  notificationsActions.push({
+                    message: 'Paste content copied to clipboard!',
+                    options: {
+                      variant: 'success',
+                      autoHideDuration: 3000,
+                    },
+                  });
                 }
               }}
               startIcon={<ContentCopy />}
