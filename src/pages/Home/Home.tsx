@@ -21,6 +21,10 @@ function Home() {
     navigate('/get-paste');
   };
 
+  const handleViewAllPastes = () => {
+    navigate('/all-pastes');
+  };
+
   return (
     <>
       <Meta title="Pastebin - Share Code & Text" />
@@ -105,7 +109,7 @@ function Home() {
           <Box
             sx={{
               display: 'flex',
-              flexDirection: isPortrait ? 'column' : 'row',
+              flexDirection: 'column',
               gap: 2,
               justifyContent: 'center',
               mb: 4,
@@ -137,6 +141,20 @@ function Home() {
               }}
             >
               View Existing Paste
+            </Button>
+
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={handleViewAllPastes}
+              sx={{
+                px: 4,
+                py: 1.5,
+                fontSize: '1.1rem',
+                borderRadius: 2,
+              }}
+            >
+              All Pastes
             </Button>
           </Box>
 
