@@ -21,6 +21,7 @@ import { ContentCopy, Send, Code, Clear, Share } from '@mui/icons-material';
 
 import Meta from '@/components/Meta';
 import { createPaste } from '@/api/pasteService';
+import useNotifications from '@/store/notifications';
 
 // Language options for syntax highlighting
 const languages = [
@@ -57,6 +58,7 @@ function CreatePaste() {
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [pasteId, setPasteId] = useState<string>('');
+  const [, notificationsActions] = useNotifications();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,6 +113,14 @@ function CreatePaste() {
     setError('');
     setSuccess('');
     setPasteId('');
+
+    notificationsActions.push({
+      message: 'Form cleared successfully!',
+      options: {
+        variant: 'info',
+        autoHideDuration: 2000,
+      },
+    });
   };
 
   // Check if Web Share API is supported
@@ -124,10 +134,22 @@ function CreatePaste() {
     try {
       const link = `${window.location.origin}/paste/${pasteId}`;
       await navigator.clipboard.writeText(link);
-      setSuccess('Link copied to clipboard!');
+      notificationsActions.push({
+        message: 'Link copied to clipboard!',
+        options: {
+          variant: 'success',
+          autoHideDuration: 3000,
+        },
+      });
     } catch (err) {
       console.error('Failed to copy to clipboard:', err);
-      setError('Failed to copy link to clipboard');
+      notificationsActions.push({
+        message: 'Failed to copy link to clipboard',
+        options: {
+          variant: 'error',
+          autoHideDuration: 3000,
+        },
+      });
     }
   };
 
