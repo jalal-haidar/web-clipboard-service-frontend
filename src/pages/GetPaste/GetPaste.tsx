@@ -36,6 +36,7 @@ import { useSearchParams } from 'react-router-dom';
 
 import Meta from '@/components/Meta';
 import { getPaste } from '@/api/pasteService';
+import useNotifications from '@/store/notifications';
 
 function GetPaste() {
   const [id, setId] = useState<string>('');
@@ -43,6 +44,7 @@ function GetPaste() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [searchParams] = useSearchParams();
+  const [, notificationsActions] = useNotifications();
 
   useEffect(() => {
     const pasteId = searchParams.get('id');
@@ -103,15 +105,36 @@ function GetPaste() {
     setId('');
     setPaste(null);
     setError('');
+
+    notificationsActions.push({
+      message: 'Form cleared successfully!',
+      options: {
+        variant: 'info',
+        autoHideDuration: 2000,
+      },
+    });
   };
 
   const handleCopy = async () => {
     if (paste?.text) {
       try {
         await navigator.clipboard.writeText(paste.text);
-        // You could add a toast notification here
+        notificationsActions.push({
+          message: 'Paste content copied to clipboard!',
+          options: {
+            variant: 'success',
+            autoHideDuration: 3000,
+          },
+        });
       } catch (err) {
         console.error('Failed to copy:', err);
+        notificationsActions.push({
+          message: 'Failed to copy paste content',
+          options: {
+            variant: 'error',
+            autoHideDuration: 3000,
+          },
+        });
       }
     }
   };
